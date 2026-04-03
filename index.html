@@ -255,7 +255,7 @@
             const container = document.getElementById('storyContainer');
             try {
                 // Menambahkan timestamp agar Netlify tidak mengambil cache lama
-                const response = await fetch('main/cerita.json?v=' + Date.now());
+                const response = await fetch('cerita.json?v=' + Date.now())
                 
                 if (!response.ok) {
                     throw new Error(`File cerita.json tidak ditemukan (Error ${response.status})`);
