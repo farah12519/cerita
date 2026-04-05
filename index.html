@@ -2,468 +2,186 @@
 <html lang="id">
 <head>
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover">
-    <title>Perpustakaan Ajaib Final Pro</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Beranda</title>
     <script src="https://cdn.tailwindcss.com"></script>
-    <script src="https://cdn.jsdelivr.net/npm/canvas-confetti@1.6.0/dist/confetti.browser.min.js"></script>
-    <link href="https://fonts.googleapis.com/css2?family=Quicksand:wght@600;700&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600&display=swap" rel="stylesheet">
     <style>
-        :root {
-            --safe-top: env(safe-area-inset-top, 0px);
-            --safe-bottom: env(safe-area-inset-bottom, 0px);
-            --primary-orange: #FFB74D;
-            --dark-brown: #5D4037;
-        }
-
         body {
-            font-family: 'Quicksand', sans-serif;
-            background: linear-gradient(135deg, #FFF9E6 0%, #FFECB3 50%, #E1F5FE 100%);
-            background-attachment: fixed;
+            font-family: 'Inter', sans-serif;
             margin: 0;
             padding: 0;
-            overflow-x: hidden;
-            -webkit-tap-highlight-color: transparent;
-            color: var(--dark-brown);
-            user-select: none;
-        }
-
-        .app-container {
-            padding-top: calc(1.5rem + var(--safe-top));
-            padding-bottom: calc(7rem + var(--safe-bottom)); 
-            min-height: 100vh;
-        }
-
-        .category-grid {
-            display: grid;
-            grid-template-columns: repeat(3, 1fr);
-            gap: 8px;
-            padding: 0 16px;
-            margin-bottom: 24px;
-        }
-
-        .cat-chip {
-            background: white;
-            padding: 10px 4px;
-            border-radius: 16px;
-            font-size: 10px;
-            font-weight: 800;
-            border: 2px solid #FFE0B2;
-            text-align: center;
-            box-shadow: 0 4px 0 #FFE0B2;
-            transition: all 0.2s;
-            cursor: pointer;
-        }
-
-        .cat-chip.active {
-            background: var(--primary-orange);
-            color: white;
-            border-color: #F57C00;
-            box-shadow: 0 4px 0 #F57C00;
-            transform: translateY(2px);
-        }
-
-        .card-item {
-            background: white;
-            border-radius: 24px;
-            padding: 10px;
-            border: 3px solid var(--primary-orange);
-            box-shadow: 0 6px 0px #FFCC80;
-            transition: all 0.2s;
-            position: relative;
-        }
-
-        .fav-badge {
-            position: absolute;
-            top: -5px;
-            left: -5px;
-            background: #FF5252;
-            color: white;
-            width: 28px;
-            height: 28px;
-            border-radius: 50%;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            font-size: 14px;
-            border: 2px solid white;
-            z-index: 10;
-        }
-
-        #modalOverlay {
-            position: fixed;
-            inset: 0;
-            z-index: 9999;
-            background: rgba(0,0,0,0.8);
-            backdrop-filter: blur(8px);
-            display: none;
-            align-items: center;
-            justify-content: center;
-            padding: 20px;
-        }
-
-        .modal-view {
-            width: 100%;
-            max-width: 380px;
-            background: white;
-            border-radius: 35px;
-            border: 5px solid var(--primary-orange);
             overflow: hidden;
-            display: flex;
-            flex-direction: column;
-            position: relative;
+            background-color: #000;
+            user-select: none;
+            touch-action: none;
         }
 
-        .scroll-area {
-            max-height: 28vh;
-            overflow-y: auto;
-            padding: 0 5px;
-            font-size: 15px;
-            line-height: 1.6;
-        }
-
-        .bottom-nav {
+        .bg-full {
             position: fixed;
-            bottom: 15px;
-            left: 20px;
-            right: 20px;
-            background: white;
-            border-radius: 30px;
-            display: flex;
-            justify-content: space-around;
-            padding: 12px 0;
-            box-shadow: 0 8px 25px rgba(0,0,0,0.1);
-            border: 2px solid #FFF3E0;
-            z-index: 1000;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background-image: url('https://user.uploads.dev/file/813fcebae0d6160ba788a6d4ce84d69a.png');
+            background-size: cover;
+            background-position: center;
+            z-index: -1;
         }
 
-        .nav-item.active {
-            color: #F57C00;
-            transform: scale(1.1);
-        }
-
-        .close-btn {
-            position: absolute;
-            top: 12px;
-            right: 12px;
-            width: 44px;
-            height: 44px;
-            background: #FF5252;
-            color: white;
-            border-radius: 50%;
+        .swipe-container {
+            width: 280px;
+            height: 60px;
+            background: rgba(255, 255, 255, 0.15);
+            backdrop-filter: blur(12px);
+            border-radius: 50px;
+            position: relative;
+            padding: 5px;
+            border: 1px solid rgba(255, 255, 255, 0.2);
             display: flex;
             align-items: center;
-            justify-content: center;
-            font-weight: bold;
-            border: 3px solid white;
-            z-index: 100;
+            box-shadow: 0 8px 32px rgba(0,0,0,0.3);
         }
 
-        .game-box {
-            background: white;
-            border-radius: 30px;
-            padding: 20px;
+        .swipe-text {
+            position: absolute;
+            width: 100%;
             text-align: center;
-            border: 4px dashed var(--primary-orange);
+            color: white;
+            font-size: 14px;
+            font-weight: 500;
+            pointer-events: none;
+            left: 0;
+            text-shadow: 
+                -1px -1px 0 rgba(0,0,0,0.8),  
+                 1px -1px 0 rgba(0,0,0,0.8),
+                -1px  1px 0 rgba(0,0,0,0.8),
+                 1px  1px 0 rgba(0,0,0,0.8);
+            letter-spacing: 0.3px;
+        }
+
+        .swipe-handle {
+            width: 50px;
+            height: 50px;
+            background: white;
+            border-radius: 50%;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            cursor: grab;
+            position: relative;
+            z-index: 10;
+            box-shadow: 0 4px 15px rgba(0,0,0,0.4);
+        }
+
+        #toast {
+            visibility: hidden;
+            min-width: 200px;
+            background: rgba(255, 255, 255, 0.95);
+            color: #000;
+            text-align: center;
+            border-radius: 50px;
+            padding: 12px 24px;
+            position: fixed;
+            bottom: 130px;
+            left: 50%;
+            transform: translateX(-50%);
+            font-size: 14px;
+            font-weight: 600;
+            z-index: 100;
+            box-shadow: 0 10px 30px rgba(0,0,0,0.5);
+            opacity: 0;
+            transition: opacity 0.3s;
+        }
+
+        #toast.show {
+            visibility: visible;
+            opacity: 1;
         }
     </style>
 </head>
-<body>
+<body class="min-h-screen flex flex-col justify-end items-center">
 
-    <div class="app-container" id="mainView">
-        <!-- HEADER -->
-        <div class="text-center mb-6">
-            <div id="headerIcon" class="text-6xl mb-2 animate-bounce">🏰</div>
-            <h1 id="pageTitle" class="text-2xl font-black text-orange-600 tracking-tight">Perpustakaan Ajaib</h1>
-            <p id="pageSub" class="text-[9px] font-bold text-orange-400 tracking-[2px] uppercase">Edisi WebView Pro</p>
-        </div>
+    <div class="bg-full"></div>
+    <div class="flex-grow"></div>
 
-        <!-- KATEGORI -->
-        <div class="category-grid" id="catGrid">
-            <div class="cat-chip active" onclick="filterCategory('Semua')">SEMUA</div>
-            <div class="cat-chip" onclick="filterCategory('Hewan')">🦁 HEWAN</div>
-            <div class="cat-chip" onclick="filterCategory('Dongeng')">📖 DONGENG</div>
-            <div class="cat-chip" onclick="filterCategory('Fantasi')">🚀 FANTASI</div>
-            <div class="cat-chip" onclick="filterCategory('Legenda')">✨ LEGENDA</div>
-            <div class="cat-chip" onclick="filterCategory('Edukasi')">🍎 EDUKASI</div>
-        </div>
-
-        <!-- KONTEN UTAMA -->
-        <div id="contentArea">
-            <div class="grid grid-cols-2 gap-4 px-4" id="storyContainer">
-                <!-- Status Awal -->
-                <div class="col-span-2 text-center py-20 text-orange-300 font-bold">
-                    <div class="animate-spin text-4xl mb-4">🪄</div>
-                    Membuka buku cerita...
-                </div>
+    <footer class="pb-20 flex justify-center w-full">
+        <div class="swipe-container" id="track">
+            <div class="swipe-text">Geser untuk Mulai Baca</div>
+            <div id="handle" class="swipe-handle">
+                <svg xmlns="http://www.w3.org/2000/svg" width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="#000" stroke-width="3" stroke-linecap="round" stroke-linejoin="round">
+                    <path d="M9 18l6-6-6-6"/>
+                </svg>
             </div>
         </div>
-    </div>
+    </footer>
 
-    <!-- MODAL CERITA -->
-    <div id="modalOverlay" onclick="handleOverlayClick(event)">
-        <div class="modal-view" onclick="event.stopPropagation()">
-            <div class="close-btn" onclick="closeModal()">✕</div>
-            <div class="relative h-48 bg-orange-50">
-                <img id="mImg" src="" class="w-full h-full object-cover">
-            </div>
-            <div class="p-6">
-                <h2 id="mTitle" class="text-xl font-black text-orange-600 mb-3 text-center"></h2>
-                <div id="mText" class="scroll-area mb-5"></div>
-                <div class="grid grid-cols-2 gap-2 mb-3">
-                    <button id="btnAudio" onclick="toggleAudio()" class="flex items-center justify-center gap-2 bg-green-500 text-white py-3 rounded-xl font-black border-b-4 border-green-700 active:border-0">
-                        <span id="audioIcon">🔊</span> <span id="audioText">SUARA</span>
-                    </button>
-                    <button id="btnFav" onclick="toggleFavoriteCurrent()" class="flex items-center justify-center gap-2 bg-yellow-400 text-white py-3 rounded-xl font-black border-b-4 border-yellow-600 active:border-0">
-                        ❤️ <span id="favText">FAVORIT</span>
-                    </button>
-                </div>
-                <button onclick="completeStory()" class="w-full bg-pink-500 text-white py-4 rounded-2xl font-black border-b-4 border-pink-700 active:border-0">
-                    🌟 SELESAI BACA
-                </button>
-            </div>
-        </div>
-    </div>
-
-    <!-- NAVIGASI BAWAH -->
-    <nav class="bottom-nav">
-        <div class="nav-item active flex flex-col items-center" id="navHome" onclick="switchPage('home')">
-            <span class="text-2xl">🏠</span>
-            <span class="text-[9px] font-bold">HOME</span>
-        </div>
-        <div class="nav-item flex flex-col items-center text-gray-300" id="navFav" onclick="switchPage('fav')">
-            <span class="text-2xl">❤️</span>
-            <span class="text-[9px] font-bold">FAVORIT</span>
-        </div>
-        <div class="nav-item flex flex-col items-center text-gray-300" id="navGame" onclick="switchPage('game')">
-            <span class="text-2xl">🧸</span>
-            <span class="text-[9px] font-bold">MAINAN</span>
-        </div>
-    </nav>
+    <div id="toast">Membuka main/main.html...</div>
 
     <script>
-        let DATA_MASTER = [];
-        let FAVORITES = [];
-        let currentPage = 'home';
-        let currentOpenStory = null;
-        let isPlaying = false;
+        const handle = document.getElementById('handle');
+        const track = document.getElementById('track');
+        const toast = document.getElementById('toast');
 
-        /**
-         * FUNGSI INIT YANG DIPERBAIKI
-         * Menangani fetch dengan cache-busting untuk Netlify
-         */
-        async function init() {
-            const container = document.getElementById('storyContainer');
-            try {
-                // Menambahkan timestamp agar Netlify tidak mengambil cache lama
-                const response = await fetch('cerita.json?v=' + Date.now())
-                
-                if (!response.ok) {
-                    throw new Error(`File cerita.json tidak ditemukan (Error ${response.status})`);
-                }
+        let isDragging = false;
+        let startX = 0;
+        
+        const getMaxSlide = () => track.offsetWidth - handle.offsetWidth - 10;
 
-                const data = await response.json();
-                
-                if (!Array.isArray(data)) {
-                    throw new Error("Format JSON harus berupa Array [ ... ]");
-                }
+        function onStart(e) {
+            isDragging = true;
+            startX = (e.type === 'touchstart') ? e.touches[0].clientX : e.clientX;
+            handle.style.transition = 'none';
+        }
 
-                DATA_MASTER = data;
-                renderStories(DATA_MASTER);
-                console.log("Berhasil memuat " + DATA_MASTER.length + " cerita dari JSON.");
+        function onMove(e) {
+            if (!isDragging) return;
+            const currentX = (e.type === 'touchmove') ? e.touches[0].clientX : e.clientX;
+            let deltaX = currentX - startX;
+            const maxSlide = getMaxSlide();
 
-            } catch (err) {
-                console.error("Gagal memuat JSON:", err);
-                container.innerHTML = `
-                    <div class="col-span-2 text-center py-10 px-6 bg-red-50 rounded-3xl border-2 border-red-200">
-                        <p class="text-4xl mb-4">😵</p>
-                        <p class="font-bold text-red-600">Aduh, Buku Cerita Hilang!</p>
-                        <p class="text-[10px] text-red-400 mt-2">${err.message}</p>
-                        <button onclick="location.reload()" class="mt-4 bg-red-500 text-white px-4 py-2 rounded-xl text-xs font-bold">Coba Lagi</button>
-                    </div>
-                `;
+            if (deltaX < 0) deltaX = 0;
+            if (deltaX > maxSlide) deltaX = maxSlide;
+
+            handle.style.transform = `translateX(${deltaX}px)`;
+
+            if (deltaX >= maxSlide * 0.98) {
+                completeAction();
             }
         }
 
-        function switchPage(page) {
-            currentPage = page;
-            const catGrid = document.getElementById('catGrid');
-            const hIcon = document.getElementById('headerIcon');
-            const title = document.getElementById('pageTitle');
+        function onEnd() {
+            if (!isDragging) return;
+            isDragging = false;
+            const maxSlide = getMaxSlide();
+            const style = window.getComputedStyle(handle);
+            const matrix = new WebKitCSSMatrix(style.transform);
             
-            document.querySelectorAll('.nav-item').forEach(n => {
-                n.classList.add('text-gray-300');
-                n.classList.remove('active', 'text-orange-500');
-            });
-
-            if (page === 'home') {
-                document.getElementById('navHome').classList.add('active', 'text-orange-500');
-                catGrid.style.display = 'grid';
-                hIcon.innerText = "🏰";
-                title.innerText = "Perpustakaan Ajaib";
-                renderStories(DATA_MASTER);
-            } else if (page === 'fav') {
-                document.getElementById('navFav').classList.add('active', 'text-orange-500');
-                catGrid.style.display = 'none';
-                hIcon.innerText = "💖";
-                title.innerText = "Cerita Favoritku";
-                renderStories(FAVORITES);
-                if(FAVORITES.length === 0) {
-                    document.getElementById('storyContainer').innerHTML = `
-                        <div class="col-span-2 text-center py-20 opacity-50">
-                            <p class="text-5xl mb-4">🎈</p>
-                            <p class="font-bold text-lg">Belum ada cerita favorit.</p>
-                            <p class="text-sm mt-2">Klik ❤️ pada cerita yang kamu suka!</p>
-                        </div>
-                    `;
-                }
-            } else if (page === 'game') {
-                document.getElementById('navGame').classList.add('active', 'text-orange-500');
-                catGrid.style.display = 'none';
-                hIcon.innerText = "🧸";
-                title.innerText = "Dunia Mainan";
-                renderGame();
+            if (matrix.m41 < maxSlide * 0.98) {
+                handle.style.transition = 'transform 0.3s cubic-bezier(0.18, 0.89, 0.32, 1.28)';
+                handle.style.transform = 'translateX(0px)';
             }
         }
 
-        function renderStories(data) {
-            const container = document.getElementById('storyContainer');
-            container.innerHTML = '';
+        function completeAction() {
+            if (!isDragging) return;
+            isDragging = false;
             
-            if (!data || data.length === 0) {
-                container.innerHTML = '<div class="col-span-2 text-center py-10">Buku cerita masih kosong...</div>';
-                return;
-            }
-
-            data.forEach(s => {
-                const isFav = FAVORITES.some(f => f.judul === s.judul);
-                const card = document.createElement('div');
-                card.className = 'card-item';
-                card.onclick = () => openStory(s);
-                card.innerHTML = `
-                    ${isFav ? '<div class="fav-badge">❤️</div>' : ''}
-                    <div class="relative h-24 rounded-xl overflow-hidden mb-2">
-                        <img src="${s.gambar}" class="w-full h-full object-cover" onerror="this.src='https://placehold.co/400x300?text=Cerita+Anak'">
-                        <div class="absolute bottom-1 right-1 bg-white/90 px-1.5 py-0.5 rounded-lg text-[8px] font-black text-orange-600">⏱ ${s.durasi || '2 mnt'}</div>
-                    </div>
-                    <h3 class="text-center font-bold text-[11px] text-orange-900 leading-tight truncate px-1">${s.judul}</h3>
-                `;
-                container.appendChild(card);
-            });
-        }
-
-        function renderGame() {
-            const container = document.getElementById('storyContainer');
-            container.innerHTML = `
-                <div class="col-span-2 px-2">
-                    <div class="game-box shadow-xl">
-                        <p class="text-sm font-bold mb-4">Tebak Emoji Hewan!</p>
-                        <div id="emojiDisplay" class="text-7xl mb-6 bg-orange-50 p-6 rounded-3xl">❓</div>
-                        <div class="grid grid-cols-2 gap-3" id="gameOptions">
-                            <button onclick="checkGame('🦁')" class="bg-orange-100 p-4 rounded-2xl text-3xl hover:bg-orange-200 transition">🦁</button>
-                            <button onclick="checkGame('🐘')" class="bg-orange-100 p-4 rounded-2xl text-3xl hover:bg-orange-200 transition">🐘</button>
-                            <button onclick="checkGame('🐸')" class="bg-orange-100 p-4 rounded-2xl text-3xl hover:bg-orange-200 transition">🐸</button>
-                            <button onclick="checkGame('🐥')" class="bg-orange-100 p-4 rounded-2xl text-3xl hover:bg-orange-200 transition">🐥</button>
-                        </div>
-                        <p id="gameMsg" class="mt-6 font-bold text-orange-600 text-lg"></p>
-                    </div>
-                </div>
-            `;
-            window.gameTarget = ['🦁','🐘','🐸','🐥'][Math.floor(Math.random()*4)];
-        }
-
-        window.checkGame = (emoji) => {
-            if(emoji === window.gameTarget) {
-                document.getElementById('emojiDisplay').innerText = emoji;
-                document.getElementById('gameMsg').innerText = "HEBAT! KAMU BENAR! 🎉";
-                confetti({particleCount: 80, spread: 70});
-                setTimeout(renderGame, 2000);
-            } else {
-                document.getElementById('gameMsg').innerText = "Coba lagi ya... 😊";
-                setTimeout(() => { document.getElementById('gameMsg').innerText = ""; }, 1000);
-            }
-        };
-
-        window.openStory = (s) => {
-            currentOpenStory = s;
-            document.getElementById('mImg').src = s.gambar;
-            document.getElementById('mTitle').innerText = s.judul;
-            document.getElementById('mText').innerText = s.isi;
-            document.getElementById('modalOverlay').style.display = 'flex';
+            handle.style.transform = `translateX(${getMaxSlide()}px)`;
+            toast.classList.add("show");
             
-            const isFav = FAVORITES.some(f => f.judul === s.judul);
-            document.getElementById('favText').innerText = isFav ? "HAPUS" : "FAVORIT";
-            
-            document.body.style.overflow = 'hidden';
-            updateAudioUI(false);
-        };
-
-        window.toggleFavoriteCurrent = () => {
-            const index = FAVORITES.findIndex(f => f.judul === currentOpenStory.judul);
-            if (index > -1) {
-                FAVORITES.splice(index, 1);
-                document.getElementById('favText').innerText = "FAVORIT";
-            } else {
-                FAVORITES.push(currentOpenStory);
-                document.getElementById('favText').innerText = "HAPUS";
-                confetti({particleCount: 30, spread: 20, origin: {y: 0.8}});
-            }
-            if(currentPage === 'fav') renderStories(FAVORITES);
-            else renderStories(DATA_MASTER);
-        };
-
-        window.closeModal = () => {
-            window.speechSynthesis.cancel();
-            document.getElementById('modalOverlay').style.display = 'none';
-            document.body.style.overflow = 'auto';
-            isPlaying = false;
-        };
-
-        window.filterCategory = (cat) => {
-            document.querySelectorAll('.cat-chip').forEach(c => {
-                c.classList.remove('active');
-                if(c.innerText.includes(cat.toUpperCase())) c.classList.add('active');
-            });
-            const filtered = cat === 'Semua' ? DATA_MASTER : DATA_MASTER.filter(s => s.kategori === cat);
-            renderStories(filtered);
-        };
-
-        window.toggleAudio = () => {
-            if (isPlaying) {
-                window.speechSynthesis.cancel();
-                isPlaying = false;
-                updateAudioUI(false);
-            } else {
-                startAudio();
-            }
-        };
-
-        function startAudio() {
-            window.speechSynthesis.cancel();
-            const utter = new SpeechSynthesisUtterance(document.getElementById('mText').innerText);
-            utter.lang = 'id-ID';
-            utter.rate = 0.9;
-            utter.onend = () => { isPlaying = false; updateAudioUI(false); };
-            isPlaying = true;
-            updateAudioUI(true);
-            window.speechSynthesis.speak(utter);
+            setTimeout(() => {
+                // Menggunakan './' untuk memastikan pencarian folder dari lokasi file saat ini
+                window.location.href = './main/main.html';
+            }, 600);
         }
 
-        function updateAudioUI(playing) {
-            const icon = document.getElementById('audioIcon');
-            const text = document.getElementById('audioText');
-            icon.innerText = playing ? "⏹" : "🔊";
-            text.innerText = playing ? "STOP" : "SUARA";
-        }
-
-        window.completeStory = () => {
-            confetti({ particleCount: 120, spread: 60, origin: { y: 0.7 } });
-            setTimeout(closeModal, 1800);
-        };
-
-        window.handleOverlayClick = (e) => { if (e.target.id === 'modalOverlay') closeModal(); };
-
-        // Jalankan fetch saat dokumen siap
-        document.addEventListener('DOMContentLoaded', init);
+        handle.addEventListener('mousedown', onStart);
+        window.addEventListener('mousemove', onMove);
+        window.addEventListener('mouseup', onEnd);
+        handle.addEventListener('touchstart', onStart, { passive: true });
+        window.addEventListener('touchmove', onMove, { passive: false });
+        window.addEventListener('touchend', onEnd);
     </script>
 </body>
 </html>
