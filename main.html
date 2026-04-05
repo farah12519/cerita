@@ -1,0 +1,377 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover">
+    <title>Dunia Cerita Ajaib</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script src="https://cdn.jsdelivr.net/npm/canvas-confetti@1.6.0/dist/confetti.browser.min.js"></script>
+    <link href="https://fonts.googleapis.com/css2?family=Quicksand:wght@600;700&display=swap" rel="stylesheet">
+    <style>
+        :root {
+            --safe-top: env(safe-area-inset-top, 0px);
+            --safe-bottom: env(safe-area-inset-bottom, 0px);
+            --primary-orange: #FFB74D;
+            --dark-brown: #5D4037;
+        }
+
+        body {
+            font-family: 'Quicksand', sans-serif;
+            background: linear-gradient(135deg, #FFF9E6 0%, #FFECB3 50%, #E1F5FE 100%);
+            background-attachment: fixed;
+            margin: 0;
+            padding: 0;
+            overflow-x: hidden;
+            -webkit-tap-highlight-color: transparent;
+            color: var(--dark-brown);
+        }
+
+        .floating-element {
+            position: fixed;
+            z-index: -1;
+            opacity: 0.6;
+            pointer-events: none;
+        }
+
+        @keyframes float-slow {
+            0%, 100% { transform: translateY(0) rotate(0deg); }
+            50% { transform: translateY(-20px) rotate(10deg); }
+        }
+
+        .app-container {
+            padding-top: calc(1.5rem + var(--safe-top));
+            padding-bottom: calc(8rem + var(--safe-bottom)); 
+            min-height: 100vh;
+        }
+
+        .header-section {
+            text-align: center;
+            margin-bottom: 25px;
+        }
+
+        .header-title {
+            font-size: 32px;
+            font-weight: 900;
+            background: linear-gradient(to bottom, #FFB74D, #F57C00);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            margin-top: 5px;
+        }
+
+        /* Grid Kategori */
+        .category-grid {
+            display: grid;
+            grid-template-columns: repeat(3, 1fr);
+            gap: 10px;
+            padding: 0 20px;
+            margin-bottom: 25px;
+        }
+        
+        .cat-chip {
+            background: white;
+            padding: 12px 4px;
+            border-radius: 18px;
+            font-size: 11px;
+            font-weight: 800;
+            border: 2px solid #FFE0B2;
+            text-align: center;
+            box-shadow: 0 4px 0 #FFE0B2;
+            transition: all 0.2s;
+            cursor: pointer;
+        }
+
+        .cat-chip.active {
+            background: var(--primary-orange);
+            color: white;
+            border-color: #F57C00;
+            box-shadow: 0 4px 0 #F57C00;
+            transform: translateY(2px);
+        }
+
+        /* Grid Cerita */
+        .story-grid {
+            display: grid;
+            grid-template-columns: repeat(2, 1fr);
+            gap: 18px;
+            padding: 0 20px;
+            min-height: 200px;
+        }
+
+        .card-item {
+            background: white;
+            border-radius: 28px;
+            padding: 10px;
+            border: 3px solid var(--primary-orange);
+            box-shadow: 0 8px 0px #FFCC80;
+            cursor: pointer;
+            transition: all 0.3s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+            position: relative;
+            animation: fadeIn 0.4s ease-out;
+        }
+
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(10px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+
+        .card-item:active {
+            transform: scale(0.94) translateY(4px);
+        }
+
+        .read-time-tag {
+            position: absolute;
+            top: 15px;
+            right: 15px;
+            background: rgba(255, 255, 255, 0.95);
+            padding: 2px 8px;
+            border-radius: 12px;
+            font-size: 9px;
+            font-weight: 800;
+            color: #F57C00;
+            z-index: 5;
+            box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+        }
+
+        /* Modal Portal System */
+        #modalOverlay {
+            position: fixed;
+            inset: 0;
+            z-index: 999999;
+            background: rgba(0,0,0,0.75);
+            backdrop-filter: blur(8px);
+            display: none;
+            align-items: center;
+            justify-content: center;
+            padding: 25px;
+        }
+
+        .btn-close-portal {
+            position: fixed;
+            top: 30px;
+            right: 30px;
+            width: 55px;
+            height: 55px;
+            background: #FF5252;
+            color: white;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 28px;
+            font-weight: bold;
+            border: 5px solid white;
+            box-shadow: 0 5px 20px rgba(0,0,0,0.5);
+            z-index: 1000001;
+            cursor: pointer;
+            touch-action: manipulation;
+        }
+
+        .modal-view {
+            width: 100%;
+            max-width: 320px;
+            background: white;
+            border-radius: 40px;
+            border: 6px solid var(--primary-orange);
+            overflow: hidden;
+            animation: popIn 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+        }
+
+        @keyframes popIn {
+            from { transform: scale(0.75); opacity: 0; }
+            to { transform: scale(1); opacity: 1; }
+        }
+
+        .scroll-area {
+            max-height: 25vh;
+            overflow-y: auto;
+            padding: 15px 20px;
+            font-size: 14px;
+            color: #4E342E;
+            line-height: 1.6;
+        }
+
+        .bottom-nav {
+            position: fixed;
+            bottom: 20px;
+            left: 20px;
+            right: 20px;
+            background: white;
+            border-radius: 32px;
+            display: flex;
+            justify-content: space-around;
+            padding: 14px 0;
+            z-index: 500;
+            box-shadow: 0 10px 30px rgba(0,0,0,0.2);
+            border: 3px solid #FFF3E0;
+        }
+    </style>
+</head>
+<body>
+
+    <div class="floating-element text-5xl" style="top: 10%; left: 5%; animation: float-slow 8s infinite;">☁️</div>
+    <div class="floating-element text-4xl" style="top: 25%; right: 10%; animation: float-slow 12s infinite reverse;">🍭</div>
+    <div class="floating-element text-4xl" style="bottom: 15%; left: 8%; animation: float-slow 10s infinite;">🎈</div>
+
+    <div class="app-container">
+        <div class="header-section">
+            <div class="text-6xl animate-bounce">🏰</div>
+            <h1 class="header-title tracking-tight">Perpustakaan Ajaib</h1>
+            <p class="text-[10px] text-orange-400 font-bold uppercase tracking-[4px] mt-1">Dunia Dongeng Anak</p>
+        </div>
+
+        <div class="category-grid" id="catGrid">
+            <div class="cat-chip active" onclick="filterCategory('Semua')">Semua</div>
+            <div class="cat-chip" onclick="filterCategory('Hewan')">🦁 Hewan</div>
+            <div class="cat-chip" onclick="filterCategory('Dongeng')">📖 Dongeng</div>
+            <div class="cat-chip" onclick="filterCategory('Fantasi')">🚀 Fantasi</div>
+            <div class="cat-chip" onclick="filterCategory('Legenda')">✨ Legenda</div>
+            <div class="cat-chip" onclick="filterCategory('Edukasi')">🍎 Edukasi</div>
+        </div>
+
+        <div class="story-grid" id="storyGrid"></div>
+    </div>
+
+    <div id="modalOverlay">
+        <div class="btn-close-portal" id="closeX">✕</div>
+        <div class="modal-view">
+            <div class="w-full h-44 overflow-hidden">
+                <img id="mImg" src="" class="w-full h-full object-cover">
+            </div>
+            <div class="p-6">
+                <h2 id="mTitle" class="text-xl font-extrabold text-orange-600 mb-2"></h2>
+                <div class="scroll-area" id="mText"></div>
+                <div class="mt-5 flex flex-col gap-3">
+                    <button class="w-full bg-green-500 text-white p-4 rounded-2xl font-extrabold border-b-4 border-green-700 active:translate-y-1 active:border-b-0 flex items-center justify-center gap-2" onclick="window.speak()">
+                        <span>▶</span> DENGARKAN CERITA
+                    </button>
+                    <button class="w-full bg-pink-500 text-white p-4 rounded-2xl font-extrabold border-b-4 border-pink-700 active:translate-y-1 active:border-b-0 flex items-center justify-center gap-2" onclick="window.finish()">
+                        <span>🌟</span> SELESAI MEMBACA
+                    </button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <nav class="bottom-nav">
+        <div class="flex flex-col items-center text-orange-500">
+            <span class="text-2xl">🏠</span>
+            <span class="text-[10px] font-bold">HOME</span>
+        </div>
+        <div class="flex flex-col items-center opacity-30">
+            <span class="text-2xl">💖</span>
+            <span class="text-[10px] font-bold">FAVORIT</span>
+        </div>
+        <div class="flex flex-col items-center opacity-30">
+            <span class="text-2xl">👤</span>
+            <span class="text-[10px] font-bold">SAYA</span>
+        </div>
+    </nav>
+
+    <script>
+        const SEMUA_CERITA = [
+            // Hewan
+            { k: "Hewan", t: "Kancil & Buaya 🦌", w: "2 Menit", i: "https://images.unsplash.com/photo-1544435253-f09624519927?w=400", d: "Si Kancil yang cerdik menipu buaya agar ia bisa menyeberangi sungai untuk memakan buah-buahan segar. Kancil melompat dari punggung ke punggung buaya sambil berhitung!" },
+            { k: "Hewan", t: "Gajah & Burung 🐘", w: "2 Menit", i: "https://images.unsplash.com/photo-1557050543-4d5f4e07ef46?w=400", d: "Gajah raksasa membantu seekor burung yang terluka sayapnya. Setiap hari gajah membawakan bunga dan air sampai burung bisa terbang tinggi kembali." },
+            
+            // Dongeng
+            { k: "Dongeng", t: "Bintang Laut ⭐️", w: "1 Menit", i: "https://images.unsplash.com/photo-1524704654690-b56c05c78a00?w=400", d: "Di bawah laut biru, ada bintang laut yang bisa bersinar saat malam gelap. Ia menjadi penunjuk jalan bagi ikan-ikan kecil yang ingin pulang ke rumah mereka." },
+            { k: "Dongeng", t: "Putri Bunga 🌸", w: "2 Menit", i: "https://images.unsplash.com/photo-1490750967868-88aa4486c946?w=400", d: "Seorang putri mungil lahir dari kelopak bunga matahari. Ia selalu membagikan aroma harum ke seluruh hutan agar semua penghuni hutan merasa bahagia setiap pagi." },
+            
+            // Fantasi
+            { k: "Fantasi", t: "Kucing Milo 🐱", w: "3 Menit", i: "https://images.unsplash.com/photo-1514888286974-6c03e2ca1dba?w=400", d: "Milo masuk ke dalam kardus ajaib yang membawanya terbang ke Planet Permen. Di sana, awannya terbuat dari gula kapas dan hujannya adalah cokelat cair yang manis!" },
+            { k: "Fantasi", t: "Naga Pelangi 🐉", w: "3 Menit", i: "https://images.unsplash.com/photo-1534447677768-be436bb09401?w=400", d: "Naga ini tidak menyemburkan api, melainkan warna-warni pelangi. Setiap kali ia bersin, muncul warna baru di langit yang membuat anak-anak di bumi tersenyum." },
+            
+            // Legenda
+            { k: "Legenda", t: "Gunung Emas 🏔", w: "4 Menit", i: "https://images.unsplash.com/photo-1464822759023-fed622ff2c3b?w=400", d: "Dahulu kala, ada gunung yang puncaknya terbuat dari emas murni. Gunung ini hanya muncul saat seseorang berbuat baik tanpa mengharap imbalan apa pun." },
+            
+            // Edukasi
+            { k: "Edukasi", t: "Piknik Sehat 🍎", w: "2 Menit", i: "https://images.unsplash.com/photo-1490818387583-1baba5e638af?w=400", d: "Ayo belajar mengenal buah! Apel merah untuk energi, Jeruk oranye agar tidak sakit, dan Pisang kuning agar otot kita kuat saat bermain lari-larian!" }
+        ];
+
+        let currentFilter = 'Semua';
+
+        function renderGrid(filter) {
+            const grid = document.getElementById('storyGrid');
+            grid.innerHTML = '';
+            
+            const filtered = filter === 'Semua' 
+                ? SEMUA_CERITA 
+                : SEMUA_CERITA.filter(c => c.k === filter);
+
+            if (filtered.length === 0) {
+                grid.innerHTML = '<div class="col-span-2 text-center py-10 opacity-50 font-bold">Belum ada cerita di kategori ini...</div>';
+                return;
+            }
+
+            filtered.forEach((c) => {
+                const card = document.createElement('div');
+                card.className = 'card-item';
+                card.onclick = () => window.openModal(c);
+                card.innerHTML = `
+                    <div class="read-time-tag">⏱ ${c.w}</div>
+                    <div class="w-full h-28 overflow-hidden rounded-2xl mb-2">
+                        <img src="${c.i}" class="w-full h-full object-cover">
+                    </div>
+                    <div class="text-center font-bold text-[12px] text-orange-900 px-1 truncate">${c.t}</div>
+                    <div class="text-[9px] text-orange-400 font-bold text-center mt-1">BACA SEKARANG ✨</div>
+                `;
+                grid.appendChild(card);
+            });
+        }
+
+        window.filterCategory = function(catName) {
+            currentFilter = catName;
+            
+            // Update UI chip
+            const chips = document.querySelectorAll('.cat-chip');
+            chips.forEach(chip => {
+                chip.classList.remove('active');
+                if (chip.innerText.includes(catName)) chip.classList.add('active');
+            });
+
+            renderGrid(catName);
+        };
+
+        window.openModal = function(story) {
+            document.getElementById('mImg').src = story.i;
+            document.getElementById('mTitle').innerText = story.t;
+            document.getElementById('mText').innerText = story.d;
+            document.getElementById('modalOverlay').style.display = 'flex';
+            document.body.style.overflow = 'hidden';
+        };
+
+        window.closeModal = function() {
+            if(window.speechSynthesis) window.speechSynthesis.cancel();
+            document.getElementById('modalOverlay').style.display = 'none';
+            document.body.style.overflow = 'auto';
+        };
+
+        window.speak = () => {
+            const text = document.getElementById('mText').innerText;
+            const u = new SpeechSynthesisUtterance(text);
+            u.lang = 'id-ID';
+            u.pitch = 1.1;
+            window.speechSynthesis.speak(u);
+        };
+
+        window.finish = () => {
+            confetti({ particleCount: 150, spread: 70, origin: { y: 0.6 } });
+            setTimeout(window.closeModal, 1800);
+        };
+
+        // Initialize
+        document.addEventListener('DOMContentLoaded', () => {
+            renderGrid('Semua');
+            const btnX = document.getElementById('closeX');
+            ['click', 'touchstart'].forEach(e => {
+                btnX.addEventListener(e, (ev) => {
+                    ev.preventDefault();
+                    ev.stopPropagation();
+                    window.closeModal();
+                }, { passive: false });
+            });
+        });
+    </script>
+</body>
+</html>
+
