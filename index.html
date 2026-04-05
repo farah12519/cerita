@@ -119,9 +119,6 @@
     <div id="toast">Mempersiapkan Cerita...</div>
 
     <script>
-        setTimeout(function() {
-    window.location.href = 'main.html';
-}, 5000); // 5000 ms = 5 detik
         const handle = document.getElementById('handle');
         const track = document.getElementById('track');
         const toast = document.getElementById('toast');
@@ -167,17 +164,16 @@
         }
 
         function completeAction() {
-            if (!isDragging) return;
-            isDragging = false;
-            
-            handle.style.transform = `translateX(${getMaxSlide()}px)`;
-            toast.classList.add("show");
-            
-            setTimeout(() => {
-                // Menggunakan './' untuk memastikan pencarian folder dari lokasi file saat ini
-               window.location.href = 'main.html';
-            }, 600);
-        }
+    if (!isDragging) return;
+    isDragging = false;
+    
+    handle.style.transform = `translateX(${getMaxSlide()}px)`;
+    toast.classList.add("show");
+    
+    setTimeout(() => {
+        window.location.href = 'main.html';
+    }, 5000); // 5 detik
+}
 
         handle.addEventListener('mousedown', onStart);
         window.addEventListener('mousemove', onMove);
