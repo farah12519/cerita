@@ -116,9 +116,12 @@
         </div>
     </footer>
 
-    <div id="toast">Membuka main/main.html...</div>
+    <div id="toast">Mempersiapkan Cerita...</div>
 
     <script>
+        setTimeout(function() {
+    window.location.href = 'main.html';
+}, 5000); // 5000 ms = 5 detik
         const handle = document.getElementById('handle');
         const track = document.getElementById('track');
         const toast = document.getElementById('toast');
