@@ -132,6 +132,22 @@
             box-shadow: 0 2px 4px rgba(0,0,0,0.1);
         }
 
+        .fav-btn {
+            position: absolute;
+            bottom: 45px;
+            right: 15px;
+            background: white;
+            width: 30px;
+            height: 30px;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            border: 2px solid #FFCDD2;
+            box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+            z-index: 10;
+        }
+
         /* Modal Portal System */
         #modalOverlay {
             position: fixed;
@@ -168,7 +184,7 @@
 
         .modal-view {
             width: 100%;
-            max-width: 320px;
+            max-width: 400px;
             background: white;
             border-radius: 40px;
             border: 6px solid var(--primary-orange);
@@ -182,12 +198,12 @@
         }
 
         .scroll-area {
-            max-height: 25vh;
+            max-height: 30vh;
             overflow-y: auto;
-            padding: 15px 20px;
-            font-size: 14px;
+            padding: 15px 5px;
+            font-size: 15px;
             color: #4E342E;
-            line-height: 1.6;
+            line-height: 1.7;
         }
 
         .bottom-nav {
@@ -204,64 +220,153 @@
             box-shadow: 0 10px 30px rgba(0,0,0,0.2);
             border: 3px solid #FFF3E0;
         }
+
+        .nav-item {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            transition: all 0.2s;
+            cursor: pointer;
+        }
+
+        .nav-item.active {
+            color: #F57C00;
+            transform: scale(1.1);
+        }
+
+        .nav-item:not(.active) {
+            opacity: 0.4;
+        }
+
+        .page-view {
+            display: none;
+            animation: fadeIn 0.3s ease-in-out;
+        }
+
+        .page-view.active {
+            display: block;
+        }
     </style>
 </head>
 <body>
 
+    <!-- Latar Belakang Dekoratif -->
     <div class="floating-element text-5xl" style="top: 10%; left: 5%; animation: float-slow 8s infinite;">☁️</div>
     <div class="floating-element text-4xl" style="top: 25%; right: 10%; animation: float-slow 12s infinite reverse;">🍭</div>
     <div class="floating-element text-4xl" style="bottom: 15%; left: 8%; animation: float-slow 10s infinite;">🎈</div>
 
     <div class="app-container">
-        <div class="header-section">
-            <div class="text-6xl animate-bounce">🏰</div>
-            <h1 class="header-title tracking-tight">Perpustakaan Ajaib</h1>
-            <p class="text-[10px] text-orange-400 font-bold uppercase tracking-[4px] mt-1">Dunia Dongeng Anak</p>
+        <!-- HALAMAN HOME -->
+        <div id="page-home" class="page-view active">
+            <div class="header-section">
+                <div class="text-6xl animate-bounce">🏰</div>
+                <h1 class="header-title tracking-tight">Perpustakaan Ajaib</h1>
+                <p class="text-[10px] text-orange-400 font-bold uppercase tracking-[4px] mt-1">Dunia Dongeng Anak</p>
+            </div>
+
+            <!-- Filter Kategori -->
+            <div class="category-grid" id="catGrid">
+                <div class="cat-chip active" onclick="filterCategory('Semua')">Semua</div>
+                <div class="cat-chip" onclick="filterCategory('Hewan')">🦁 Hewan</div>
+                <div class="cat-chip" onclick="filterCategory('Dongeng')">📖 Dongeng</div>
+                <div class="cat-chip" onclick="filterCategory('Fantasi')">🚀 Fantasi</div>
+                <div class="cat-chip" onclick="filterCategory('Legenda')">✨ Legenda</div>
+                <div class="cat-chip" onclick="filterCategory('Edukasi')">🍎 Edukasi</div>
+            </div>
+
+            <!-- Grid Cerita -->
+            <div class="story-grid" id="storyGrid"></div>
         </div>
 
-        <div class="category-grid" id="catGrid">
-            <div class="cat-chip active" onclick="filterCategory('Semua')">Semua</div>
-            <div class="cat-chip" onclick="filterCategory('Hewan')">🦁 Hewan</div>
-            <div class="cat-chip" onclick="filterCategory('Dongeng')">📖 Dongeng</div>
-            <div class="cat-chip" onclick="filterCategory('Fantasi')">🚀 Fantasi</div>
-            <div class="cat-chip" onclick="filterCategory('Legenda')">✨ Legenda</div>
-            <div class="cat-chip" onclick="filterCategory('Edukasi')">🍎 Edukasi</div>
+        <!-- HALAMAN FAVORIT -->
+        <div id="page-favorit" class="page-view">
+            <div class="header-section">
+                <div class="text-6xl">💖</div>
+                <h1 class="header-title">Cerita Favoritku</h1>
+                <p class="text-[10px] text-orange-400 font-bold uppercase tracking-[4px] mt-1">Koleksi Kesayanganmu</p>
+            </div>
+            <div class="story-grid" id="favGrid"></div>
         </div>
 
-        <div class="story-grid" id="storyGrid"></div>
+        <!-- HALAMAN SAYA -->
+        <div id="page-saya" class="page-view">
+            <div class="header-section">
+                <div class="text-6xl">🧒</div>
+                <h1 class="header-title">Profil Saya</h1>
+            </div>
+            <div class="px-8 mt-5">
+                <div class="bg-white p-6 rounded-[32px] border-4 border-orange-200 text-center shadow-lg">
+                    <div class="text-4xl mb-2">🏅</div>
+                    <div class="text-lg font-extrabold text-orange-800">Pembaca Cilik Hebat</div>
+                    <p class="text-sm text-orange-400 font-bold">Level 1: Penjelajah Awan</p>
+                    <div class="w-full bg-orange-100 h-4 rounded-full mt-4 overflow-hidden border-2 border-orange-200">
+                        <div class="bg-orange-400 h-full w-[40%]"></div>
+                    </div>
+                    <p class="text-[10px] mt-2 font-bold text-orange-600">60% lagi menuju Level 2!</p>
+                </div>
+
+                <div class="mt-6 space-y-4">
+                    <div class="bg-white p-4 rounded-2xl flex items-center gap-4 border-2 border-orange-100">
+                        <span class="text-2xl">📚</span>
+                        <div>
+                            <div class="text-sm font-bold">Total Bacaan</div>
+                            <div class="text-xs text-gray-400">12 Cerita Selesai</div>
+                        </div>
+                    </div>
+                    <div class="bg-white p-4 rounded-2xl flex items-center gap-4 border-2 border-orange-100">
+                        <span class="text-2xl">⏰</span>
+                        <div>
+                            <div class="text-sm font-bold">Waktu Membaca</div>
+                            <div class="text-xs text-gray-400">45 Menit Minggu Ini</div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
     </div>
 
+    <!-- Modal Cerita -->
     <div id="modalOverlay">
         <div class="btn-close-portal" id="closeX">✕</div>
         <div class="modal-view">
-            <div class="w-full h-44 overflow-hidden">
-                <img id="mImg" src="" class="w-full h-full object-cover">
+            <div class="w-full h-40 overflow-hidden relative">
+                <img id="mImg" src="" class="w-full h-full object-cover" onerror="this.src='https://via.placeholder.com/400x300?text=Cerita+Ajaib'">
+                <!-- Tombol Favorit di Modal -->
+                <button id="modalFavBtn" class="absolute top-4 right-4 bg-white/90 w-12 h-12 rounded-full flex items-center justify-center shadow-lg border-2 border-pink-200 text-2xl active:scale-90 transition-transform">
+                    🤍
+                </button>
             </div>
             <div class="p-6">
-                <h2 id="mTitle" class="text-xl font-extrabold text-orange-600 mb-2"></h2>
+                <h2 id="mTitle" class="text-xl font-extrabold text-orange-600 mb-1"></h2>
                 <div class="scroll-area" id="mText"></div>
-                <div class="mt-5 flex flex-col gap-3">
-                    <button class="w-full bg-green-500 text-white p-4 rounded-2xl font-extrabold border-b-4 border-green-700 active:translate-y-1 active:border-b-0 flex items-center justify-center gap-2" onclick="window.speak()">
-                        <span>▶</span> DENGARKAN CERITA
-                    </button>
-                    <button class="w-full bg-pink-500 text-white p-4 rounded-2xl font-extrabold border-b-4 border-pink-700 active:translate-y-1 active:border-b-0 flex items-center justify-center gap-2" onclick="window.finish()">
-                        <span>🌟</span> SELESAI MEMBACA
+                <div class="mt-4 flex flex-col gap-2">
+                    <div class="grid grid-cols-2 gap-2">
+                        <button class="bg-green-500 text-white p-3 rounded-2xl font-extrabold border-b-4 border-green-700 active:translate-y-1 active:border-b-0 flex items-center justify-center gap-2 text-sm" onclick="window.speak()">
+                            <span>▶</span> DENGERIN
+                        </button>
+                        <button id="modalSaveBtn" class="bg-blue-500 text-white p-3 rounded-2xl font-extrabold border-b-4 border-blue-700 active:translate-y-1 active:border-b-0 flex items-center justify-center gap-2 text-sm">
+                            <span>💾</span> SIMPAN
+                        </button>
+                    </div>
+                    <button class="w-full bg-pink-500 text-white p-3 rounded-2xl font-extrabold border-b-4 border-pink-700 active:translate-y-1 active:border-b-0 flex items-center justify-center gap-2" onclick="window.finish()">
+                        <span>🌟</span> SELESAI BACA
                     </button>
                 </div>
             </div>
         </div>
     </div>
 
+    <!-- Navigasi Bawah -->
     <nav class="bottom-nav">
-        <div class="flex flex-col items-center text-orange-500">
+        <div class="nav-item active" onclick="switchPage('home', this)">
             <span class="text-2xl">🏠</span>
             <span class="text-[10px] font-bold">HOME</span>
         </div>
-        <div class="flex flex-col items-center opacity-30">
+        <div class="nav-item" onclick="switchPage('favorit', this)">
             <span class="text-2xl">💖</span>
             <span class="text-[10px] font-bold">FAVORIT</span>
         </div>
-        <div class="flex flex-col items-center opacity-30">
+        <div class="nav-item" onclick="switchPage('saya', this)">
             <span class="text-2xl">👤</span>
             <span class="text-[10px] font-bold">SAYA</span>
         </div>
@@ -269,37 +374,105 @@
 
     <script>
         const SEMUA_CERITA = [
-            // Hewan
-            { k: "Hewan", t: "Kancil & Buaya 🦌", w: "2 Menit", i: "https://images.unsplash.com/photo-1544435253-f09624519927?w=400", d: "Si Kancil yang cerdik menipu buaya agar ia bisa menyeberangi sungai untuk memakan buah-buahan segar. Kancil melompat dari punggung ke punggung buaya sambil berhitung!" },
-            { k: "Hewan", t: "Gajah & Burung 🐘", w: "2 Menit", i: "https://images.unsplash.com/photo-1557050543-4d5f4e07ef46?w=400", d: "Gajah raksasa membantu seekor burung yang terluka sayapnya. Setiap hari gajah membawakan bunga dan air sampai burung bisa terbang tinggi kembali." },
-            
-            // Dongeng
-            { k: "Dongeng", t: "Bintang Laut ⭐️", w: "1 Menit", i: "https://images.unsplash.com/photo-1524704654690-b56c05c78a00?w=400", d: "Di bawah laut biru, ada bintang laut yang bisa bersinar saat malam gelap. Ia menjadi penunjuk jalan bagi ikan-ikan kecil yang ingin pulang ke rumah mereka." },
-            { k: "Dongeng", t: "Putri Bunga 🌸", w: "2 Menit", i: "https://images.unsplash.com/photo-1490750967868-88aa4486c946?w=400", d: "Seorang putri mungil lahir dari kelopak bunga matahari. Ia selalu membagikan aroma harum ke seluruh hutan agar semua penghuni hutan merasa bahagia setiap pagi." },
-            
-            // Fantasi
-            { k: "Fantasi", t: "Kucing Milo 🐱", w: "3 Menit", i: "https://images.unsplash.com/photo-1514888286974-6c03e2ca1dba?w=400", d: "Milo masuk ke dalam kardus ajaib yang membawanya terbang ke Planet Permen. Di sana, awannya terbuat dari gula kapas dan hujannya adalah cokelat cair yang manis!" },
-            { k: "Fantasi", t: "Naga Pelangi 🐉", w: "3 Menit", i: "https://images.unsplash.com/photo-1534447677768-be436bb09401?w=400", d: "Naga ini tidak menyemburkan api, melainkan warna-warni pelangi. Setiap kali ia bersin, muncul warna baru di langit yang membuat anak-anak di bumi tersenyum." },
-            
-            // Legenda
-            { k: "Legenda", t: "Gunung Emas 🏔", w: "4 Menit", i: "https://images.unsplash.com/photo-1464822759023-fed622ff2c3b?w=400", d: "Dahulu kala, ada gunung yang puncaknya terbuat dari emas murni. Gunung ini hanya muncul saat seseorang berbuat baik tanpa mengharap imbalan apa pun." },
-            
-            // Edukasi
-            { k: "Edukasi", t: "Piknik Sehat 🍎", w: "2 Menit", i: "https://images.unsplash.com/photo-1490818387583-1baba5e638af?w=400", d: "Ayo belajar mengenal buah! Apel merah untuk energi, Jeruk oranye agar tidak sakit, dan Pisang kuning agar otot kita kuat saat bermain lari-larian!" }
+            { id: 1, k: "Hewan", t: "Kancil & Buaya 🦌", w: "2 Menit", i: "https://images.unsplash.com/photo-1544435253-f09624519927?w=400", d: "Si Kancil yang cerdik menipu buaya agar ia bisa menyeberangi sungai untuk memakan buah-buahan segar. Kancil melompat dari punggung ke punggung buaya sambil berhitung satu sampai sepuluh! Akhirnya kancil sampai di seberang dengan selamat dan kenyang." },
+            { id: 2, k: "Hewan", t: "Gajah & Burung 🐘", w: "2 Menit", i: "https://images.unsplash.com/photo-1557050543-4d5f4e07ef46?w=400", d: "Gajah raksasa membantu seekor burung yang terluka sayapnya. Setiap hari gajah membawakan bunga dan air sampai burung bisa terbang tinggi kembali. Mereka menjadi sahabat selamanya." },
+            { id: 3, k: "Dongeng", t: "Bintang Laut ⭐️", w: "1 Menit", i: "https://images.unsplash.com/photo-1524704654690-b56c05c78a00?w=400", d: "Di bawah laut biru, ada bintang laut yang bisa bersinar saat malam gelap. Ia menjadi penunjuk jalan bagi ikan-ikan kecil yang ingin pulang ke rumah mereka di terumbu karang yang indah." },
+            { id: 4, k: "Dongeng", t: "Putri Bunga 🌸", w: "2 Menit", i: "https://images.unsplash.com/photo-1490750967868-88aa4486c946?w=400", d: "Seorang putri mungil lahir dari kelopak bunga matahari. Ia selalu membagikan aroma harum ke seluruh hutan agar semua penghuni hutan merasa bahagia dan damai setiap pagi." },
+            { id: 5, k: "Fantasi", t: "Kucing Milo 🐱", w: "3 Menit", i: "https://images.unsplash.com/photo-1514888286974-6c03e2ca1dba?w=400", d: "Milo masuk ke dalam kardus ajaib yang membawanya terbang ke Planet Permen. Di sana, awannya terbuat dari gula kapas dan hujannya adalah cokelat cair yang sangat manis dan lezat!" },
+            { id: 6, k: "Fantasi", t: "Naga Pelangi 🐉", w: "3 Menit", i: "https://images.unsplash.com/photo-1534447677768-be436bb09401?w=400", d: "Naga ini tidak menyemburkan api, melainkan warna-warni pelangi. Setiap kali ia bersin, muncul warna baru di langit yang membuat anak-anak di bumi tersenyum lebar melihat keindahan angkasa." },
+            { id: 7, k: "Legenda", t: "Gunung Emas 🏔", w: "4 Menit", i: "https://images.unsplash.com/photo-1464822759023-fed622ff2c3b?w=400", d: "Dahulu kala, ada gunung yang puncaknya terbuat dari emas murni. Gunung ini hanya muncul saat seseorang berbuat baik dengan tulus tanpa mengharap imbalan apa pun di dalam hutan rimba." },
+            { id: 8, k: "Edukasi", t: "Piknik Sehat 🍎", w: "2 Menit", i: "https://images.unsplash.com/photo-1490818387583-1baba5e638af?w=400", d: "Ayo belajar mengenal buah! Apel merah untuk energi lari, Jeruk oranye agar kita tidak mudah sakit, dan Pisang kuning agar otot kita kuat saat bermain lari-larian bersama teman!" }
         ];
 
+        let favorites = [];
         let currentFilter = 'Semua';
+        let activeStoryId = null;
 
+        // Fungsi Switch Halaman
+        window.switchPage = (pageId, element) => {
+            document.querySelectorAll('.nav-item').forEach(item => item.classList.remove('active'));
+            element.classList.add('active');
+            document.querySelectorAll('.page-view').forEach(page => page.classList.remove('active'));
+            document.getElementById(`page-${pageId}`).classList.add('active');
+
+            if (pageId === 'favorit') renderFavorites();
+            if (pageId === 'home') renderGrid(currentFilter);
+        };
+
+        // Fungsi Favorit (Global)
+        window.toggleFavorite = (id, event) => {
+            if (event) event.stopPropagation();
+            
+            if (favorites.includes(id)) {
+                favorites = favorites.filter(favId => favId !== id);
+            } else {
+                favorites.push(id);
+                // Tambahkan efek kecil jika diinginkan
+            }
+            
+            updateUIAfterFavChange();
+        };
+
+        function updateUIAfterFavChange() {
+            renderGrid(currentFilter);
+            if (document.getElementById('page-favorit').classList.contains('active')) {
+                renderFavorites();
+            }
+            updateModalFavUI();
+        }
+
+        function updateModalFavUI() {
+            if (!activeStoryId) return;
+            const isFav = favorites.includes(activeStoryId);
+            const favBtn = document.getElementById('modalFavBtn');
+            const saveBtn = document.getElementById('modalSaveBtn');
+            
+            favBtn.innerText = isFav ? '❤️' : '🤍';
+            saveBtn.innerHTML = isFav ? '<span>❌</span> HAPUS' : '<span>💾</span> SIMPAN';
+            saveBtn.className = isFav 
+                ? "bg-red-500 text-white p-3 rounded-2xl font-extrabold border-b-4 border-red-700 active:translate-y-1 active:border-b-0 flex items-center justify-center gap-2 text-sm"
+                : "bg-blue-500 text-white p-3 rounded-2xl font-extrabold border-b-4 border-blue-700 active:translate-y-1 active:border-b-0 flex items-center justify-center gap-2 text-sm";
+        }
+
+        // Render List Cerita
         function renderGrid(filter) {
             const grid = document.getElementById('storyGrid');
+            if (!grid) return;
             grid.innerHTML = '';
             
             const filtered = filter === 'Semua' 
                 ? SEMUA_CERITA 
                 : SEMUA_CERITA.filter(c => c.k === filter);
 
+            filtered.forEach((c) => {
+                const isFav = favorites.includes(c.id);
+                const card = document.createElement('div');
+                card.className = 'card-item';
+                card.onclick = () => window.openModal(c);
+                card.innerHTML = `
+                    <div class="read-time-tag">⏱ ${c.w}</div>
+                    <div class="fav-btn" onclick="toggleFavorite(${c.id}, event)">
+                        ${isFav ? '❤️' : '🤍'}
+                    </div>
+                    <div class="w-full h-28 overflow-hidden rounded-2xl mb-2">
+                        <img src="${c.i}" class="w-full h-full object-cover" loading="lazy">
+                    </div>
+                    <div class="text-center font-bold text-[12px] text-orange-900 px-1 truncate">${c.t}</div>
+                    <div class="text-[9px] text-orange-400 font-bold text-center mt-1">BACA SEKARANG ✨</div>
+                `;
+                grid.appendChild(card);
+            });
+        }
+
+        function renderFavorites() {
+            const grid = document.getElementById('favGrid');
+            if (!grid) return;
+            grid.innerHTML = '';
+            
+            const filtered = SEMUA_CERITA.filter(c => favorites.includes(c.id));
+
             if (filtered.length === 0) {
-                grid.innerHTML = '<div class="col-span-2 text-center py-10 opacity-50 font-bold">Belum ada cerita di kategori ini...</div>';
+                grid.innerHTML = '<div class="col-span-2 text-center py-10 opacity-50 font-bold px-10">Belum ada favorit. Klik ❤️ pada cerita yang kamu suka!</div>';
                 return;
             }
 
@@ -309,64 +482,88 @@
                 card.onclick = () => window.openModal(c);
                 card.innerHTML = `
                     <div class="read-time-tag">⏱ ${c.w}</div>
+                    <div class="fav-btn" onclick="toggleFavorite(${c.id}, event)">❤️</div>
                     <div class="w-full h-28 overflow-hidden rounded-2xl mb-2">
                         <img src="${c.i}" class="w-full h-full object-cover">
                     </div>
                     <div class="text-center font-bold text-[12px] text-orange-900 px-1 truncate">${c.t}</div>
-                    <div class="text-[9px] text-orange-400 font-bold text-center mt-1">BACA SEKARANG ✨</div>
                 `;
                 grid.appendChild(card);
             });
         }
 
+        // Fungsi Filter Kategori
         window.filterCategory = function(catName) {
             currentFilter = catName;
-            
-            // Update UI chip
-            const chips = document.querySelectorAll('.cat-chip');
-            chips.forEach(chip => {
+            document.querySelectorAll('.cat-chip').forEach(chip => {
                 chip.classList.remove('active');
                 if (chip.innerText.includes(catName)) chip.classList.add('active');
             });
-
             renderGrid(catName);
         };
 
+        // Fungsi Modal
         window.openModal = function(story) {
+            activeStoryId = story.id;
             document.getElementById('mImg').src = story.i;
             document.getElementById('mTitle').innerText = story.t;
             document.getElementById('mText').innerText = story.d;
             document.getElementById('modalOverlay').style.display = 'flex';
             document.body.style.overflow = 'hidden';
+            updateModalFavUI();
         };
 
         window.closeModal = function() {
             if(window.speechSynthesis) window.speechSynthesis.cancel();
             document.getElementById('modalOverlay').style.display = 'none';
             document.body.style.overflow = 'auto';
+            activeStoryId = null;
         };
 
+        // Audio Reader
         window.speak = () => {
+            if (!('speechSynthesis' in window)) return;
+            window.speechSynthesis.cancel();
             const text = document.getElementById('mText').innerText;
             const u = new SpeechSynthesisUtterance(text);
             u.lang = 'id-ID';
-            u.pitch = 1.1;
+            u.pitch = 1.2;
             window.speechSynthesis.speak(u);
         };
 
+        // Confetti
         window.finish = () => {
-            confetti({ particleCount: 150, spread: 70, origin: { y: 0.6 } });
-            setTimeout(window.closeModal, 1800);
+            confetti({
+                particleCount: 150,
+                spread: 70,
+                origin: { y: 0.6 }
+            });
+            setTimeout(window.closeModal, 2000);
         };
 
-        // Initialize
+        // Bootstrapping
         document.addEventListener('DOMContentLoaded', () => {
             renderGrid('Semua');
+            
+            // Event Listener untuk tombol-tombol di modal
+            document.getElementById('modalFavBtn').addEventListener('click', () => {
+                if (activeStoryId) toggleFavorite(activeStoryId);
+            });
+
+            document.getElementById('modalSaveBtn').addEventListener('click', () => {
+                if (activeStoryId) {
+                    toggleFavorite(activeStoryId);
+                    // Jika baru saja disimpan, berikan feedback visual
+                    if (favorites.includes(activeStoryId)) {
+                        confetti({ particleCount: 40, spread: 50, origin: { y: 0.8 } });
+                    }
+                }
+            });
+
             const btnX = document.getElementById('closeX');
             ['click', 'touchstart'].forEach(e => {
                 btnX.addEventListener(e, (ev) => {
                     ev.preventDefault();
-                    ev.stopPropagation();
                     window.closeModal();
                 }, { passive: false });
             });
@@ -374,4 +571,3 @@
     </script>
 </body>
 </html>
-
