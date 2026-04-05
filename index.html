@@ -168,11 +168,17 @@
     isDragging = false;
     
     handle.style.transform = `translateX(${getMaxSlide()}px)`;
+    
+    // sembunyikan tombol
+    handle.style.opacity = '0';
+    handle.style.pointerEvents = 'none';
+    
+    // tampilkan toast
     toast.classList.add("show");
     
     setTimeout(() => {
         window.location.href = 'main.html';
-    }, 5000); // 5 detik
+    }, 5000);
 }
 
         handle.addEventListener('mousedown', onStart);
